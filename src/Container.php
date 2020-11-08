@@ -62,7 +62,7 @@ class Container
         ];
     }
 
-    public function loadServices(string $namespace)
+    public function loadServices(string $namespace, ?\Closure $callback = null)
     {
         $baseDir = __DIR__ . '/';
 
@@ -114,6 +114,10 @@ class Container
                 return new $serviceName(...$serviceParameters);
             });
 //            var_dump($constructor->getParameters());
+
+            if ($callback) {
+                $callback($serviceName, $reflectionClass);
+            }
         }
 
     }
