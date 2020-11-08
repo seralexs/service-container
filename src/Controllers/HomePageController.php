@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Service\Serializer;
+use App\Services\Serializer;
 
 class HomePageController
 {

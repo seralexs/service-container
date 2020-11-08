@@ -7,9 +7,9 @@ require 'vendor/autoload.php';
 
 use App\Format\JSON;
 use App\Format\XML;
-use App\Service\Serializer;
 use App\Controllers\HomePageController;
 use App\Container;
+use App\Format\Interfaces\FormatInterface;
 
 $data = [
     'first_name' => 'Serhii',
@@ -18,26 +18,30 @@ $data = [
 
 $container = new Container();
 
-$container->addService('format.json', function () {
+$container->addService(JSON::class, function () {
     return new JSON();
 });
 
-$container->addService('format.xml', function () {
+$container->addService(XML::class, function () {
     return new XML();
 });
 
 $container->addService('format', function () use ($container) {
-    return $container->getService('format.json');
-});
+    return $container->getService(JSON::class);
+}, FormatInterface::class);
 
-$container->addService('serializer', function () use ($container) {
-    return new Serializer($container->getService('format'));
-});
+//$container->addService(Serializer::class, function () use ($container) {
+//    return new Serializer($container->getService('format'));
+//});
 
-$container->addService('controller.home', function () use ($container) {
-    return new HomePageController($container->getService('serializer'));
-});
+//$container->addService(HomePageController::class, function () use ($container) {
+//    return new HomePageController($container->getService(Serializer::class));
+//});
+
+$container->loadServices('App\\Services');
+$container->loadServices('App\\Controllers');
 
 echo '<pre>';
-var_dump($container->getService('controller.home')->index());
+var_dump($container->getService(HomePageController::class)->index());
+var_dump($container->getServices());
 echo '</pre>';
